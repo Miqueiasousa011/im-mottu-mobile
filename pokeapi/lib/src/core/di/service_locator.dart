@@ -6,6 +6,7 @@ import '../../features/pokemon/data/datasources/remote/pokemon_remote_datasource
 import '../../features/pokemon/data/repositories/pokemon_repository_impl.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemons/fetch_pokemons_usecase.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemons/fetch_pokemons_usecase_impl.dart';
+import '../../features/pokemon/presentation/notifiers/pokemon_notifier.dart';
 import '../services/http_client/dio_http_client_service.dart';
 import '../services/http_client/http_client_service.dart';
 
@@ -31,5 +32,10 @@ void setupServiceLocator() {
   /// UseCases
   getIt.registerLazySingleton<FetchPokemonsUseCase>(
     () => FetchPokemonsUsecaseImpl(repository: getIt<PokemonRepository>()),
+  );
+
+  /// Notifiers
+  getIt.registerFactory(
+    () => PokemonNotifier(fetchPokemonsUseCase: getIt<FetchPokemonsUseCase>()),
   );
 }
