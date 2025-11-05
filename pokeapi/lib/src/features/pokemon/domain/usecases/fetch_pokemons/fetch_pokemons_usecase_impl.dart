@@ -3,12 +3,19 @@ import '../../repositories/pokemon_repository.dart';
 import 'fetch_pokemons_usecase.dart';
 
 class FetchPokemonsUsecaseImpl implements FetchPokemonsUseCase {
-  final PokemonRepository repository;
+  final PokemonRepository _repository;
 
-  const FetchPokemonsUsecaseImpl(this.repository);
+  const FetchPokemonsUsecaseImpl({required PokemonRepository repository})
+    : _repository = repository;
 
   @override
-  Future<List<PokemonEntity>> call({required int pageLimit, required int pageOffset}) {
-    return repository.fetchPokemons(pageLimit: pageLimit, pageOffset: pageOffset);
+  Future<List<PokemonEntity>> call({
+    required int pageLimit,
+    required int pageOffset,
+  }) {
+    return _repository.fetchPokemons(
+      pageLimit: pageLimit,
+      pageOffset: pageOffset,
+    );
   }
 }
