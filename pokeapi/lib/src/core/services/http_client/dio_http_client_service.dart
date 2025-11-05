@@ -24,7 +24,12 @@ class DioHttpClientService implements HttpClientService {
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
-      return await _dio.get(endpoint, queryParameters: queryParameters);
+      final response = await _dio.get(
+        endpoint,
+        queryParameters: queryParameters,
+      );
+
+      return response.data;
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
