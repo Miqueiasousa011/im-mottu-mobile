@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:pokeapi/src/features/pokemon/domain/repositories/pokemon_repository.dart';
 
+import '../../features/pokemon/data/datasources/local/pokemon_loca_datasource_impl.dart';
 import '../../features/pokemon/data/datasources/pokemon_datasource.dart';
+import '../../features/pokemon/data/datasources/pokemon_local_datasource.dart';
 import '../../features/pokemon/data/datasources/remote/pokemon_remote_datasource.dart';
 import '../../features/pokemon/data/repositories/pokemon_repository_impl.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemons/fetch_pokemons_usecase.dart';
@@ -26,6 +28,10 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<PokemonDatasource>(
     () =>
         PokemonRemoteDatasource(httpClientService: getIt<HttpClientService>()),
+  );
+
+  getIt.registerLazySingleton<PokemonLocalDatasource>(
+    () => PokemonLocalDatasourceImpl(getIt<AppDatabase>()),
   );
 
   /// Repositories
