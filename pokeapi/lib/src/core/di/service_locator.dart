@@ -7,12 +7,16 @@ import '../../features/pokemon/data/repositories/pokemon_repository_impl.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemons/fetch_pokemons_usecase.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemons/fetch_pokemons_usecase_impl.dart';
 import '../../features/pokemon/presentation/notifiers/pokemon_notifier.dart';
+import '../database/app_database.dart';
 import '../services/http_client/dio_http_client_service.dart';
 import '../services/http_client/http_client_service.dart';
 
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
+  /// SQFlite Database
+  getIt.registerLazySingleton<AppDatabase>(() => AppDatabase());
+
   /// Services
   getIt.registerLazySingleton<HttpClientService>(
     () => DioHttpClientService(baseUrl: 'https://pokeapi.co/api/v2'),
