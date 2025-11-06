@@ -30,7 +30,7 @@ class PokemonLocalDatasourceImpl implements PokemonLocalDatasource {
           'name': pokemon.name,
           'weight': pokemon.weight,
           'height': pokemon.height,
-          'imageUrl': pokemon.imageUrl,
+          'image_url': pokemon.imageUrl,
         }, conflictAlgorithm: ConflictAlgorithm.replace);
 
         for (final type in pokemon.types) {

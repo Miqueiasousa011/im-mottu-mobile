@@ -36,7 +36,10 @@ void setupServiceLocator() {
 
   /// Repositories
   getIt.registerLazySingleton<PokemonRepository>(
-    () => PokemonRepositoryImpl(datasource: getIt<PokemonDatasource>()),
+    () => PokemonRepositoryImpl(
+      remoteDatasource: getIt<PokemonDatasource>(),
+      localDatasource: getIt<PokemonLocalDatasource>(),
+    ),
   );
 
   /// UseCases
