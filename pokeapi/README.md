@@ -1,16 +1,39 @@
-# pokeapi
 
-A new Flutter project.
+## Arquitetura Utilizada
 
-## Getting Started
+O projeto segue uma abordagem baseada em Clean Architecture e Feature-based, com as camadas:
 
-This project is a starting point for a Flutter application.
+lib/
+├── core/ # Recursos globais (Rotas, Injeção de Dependência, Services ...) 
+├── features/
+│ └── pokemon/
+│ ├── data/ # DataSource + Repository Implementation
+│ ├── domain/ # Entities + Repository Contrato + UseCases
+│ └── presentation/# UI + Notifier (ValueNotifier)
 
-A few resources to get you started if this is your first Flutter project:
+### Gerenciamento de Estado
+Foi utilizado ValueNotifier, pela simplicidade e não depender de packages externos
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Como Rodar o Projeto
+- Flutter SDK instalado (versão 3.35.6)
+- Dispositivo Android/iOS ou emulador configurado
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Entre na pasta /pokeapi
+# Instale as dependência - flutter pub get
+# Rodar o projeto - flutter run
+
+## Implementações
+
+## Nível 1 — level_1
+
+## Funcionalidades Implementadas no level_1
+
+- [x] Consumo da PokeAPI (`/api/v2/pokemon`,`/api/v2/pokemon/id` )
+- [x] Mostrar uma listagem de Pokémons com:
+  - Imagem
+  - Nome
+- [x] Tela de detalhes contendo:
+  - Imagem
+  - Nome
+  - Altura
+  - Peso
