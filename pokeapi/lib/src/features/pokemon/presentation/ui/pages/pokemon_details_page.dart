@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/network_image_widget.dart';
 import '../../../domain/entities/pokemon_entity.dart';
 import '../widgets/pokemon_trait_widget.dart';
+import '../widgets/trait_item_widget.dart';
 
 class PokemonDetailsPage extends StatelessWidget {
   const PokemonDetailsPage({super.key, required this.pokemon});
@@ -16,39 +19,76 @@ class PokemonDetailsPage extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Card(
-          child: Column(
-            spacing: 16,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Image.network(
-                pokemon.imageUrl,
-                height: 210,
-                width: 201,
-                fit: BoxFit.contain,
-              ),
-              Text(
-                pokemon.name,
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
+          color: AppColors.white,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: Column(
+              spacing: 16,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ImageNetworkWidget(
+                  pokemon.imageUrl,
+                  height: 210,
+                  width: 201,
+                  fit: BoxFit.contain,
+                ),
+                Text(
+                  pokemon.name,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ),
 
-              Row(
-                spacing: 16,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  PokemonTraitWidget(
-                    traitName: 'Altura',
-                    traitDescription: '${pokemon.height.toInt()}',
-                  ),
-                  PokemonTraitWidget(
-                    traitName: 'Peso',
-                    traitDescription: '${pokemon.weight.toInt()}',
-                  ),
-                ],
-              ),
+                Row(
+                  spacing: 16,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PokemonTraitWidget(
+                      traitName: 'Altura',
+                      traitDescription: '${pokemon.height.toInt()}',
+                    ),
+                    PokemonTraitWidget(
+                      traitName: 'Peso',
+                      traitDescription: '${pokemon.weight.toInt()}',
+                    ),
+                  ],
+                ),
 
-              const SizedBox(height: 20),
-            ],
+                const Text(
+                  'Habilidades',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    spacing: 16,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: pokemon.abilities
+                        .map(
+                          (ability) =>
+                              TraitItemWidget(description: ability.name),
+                        )
+                        .toList(),
+                  ),
+                ),
+
+                const Text(
+                  'Tipos',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+
+                Row(
+                  spacing: 16,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: pokemon.types
+                      .map((type) => TraitItemWidget(description: type.name))
+                      .toList(),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),

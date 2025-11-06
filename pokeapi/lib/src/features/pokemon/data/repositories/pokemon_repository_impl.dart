@@ -2,29 +2,44 @@ import 'package:pokeapi/src/features/pokemon/domain/entities/pokemon_entity.dart
 
 import '../../domain/repositories/pokemon_repository.dart';
 import '../datasources/pokemon_datasource.dart';
+import '../datasources/pokemon_local_datasource.dart';
 
 class PokemonRepositoryImpl implements PokemonRepository {
-  final PokemonDatasource _datasource;
+  final PokemonDatasource _remoteDatasource;
+  final PokemonLocalDatasource _localDatasource;
 
-  const PokemonRepositoryImpl({required PokemonDatasource datasource})
-    : _datasource = datasource;
+  const PokemonRepositoryImpl({
+    required PokemonDatasource remoteDatasource,
+    required PokemonLocalDatasource localDatasource,
+  }) : _remoteDatasource = remoteDatasource,
+       _localDatasource = localDatasource;
 
   @override
   Future<List<PokemonEntity>> fetchPokemons({
     required int pageLimit,
     required int pageOffset,
   }) async {
-    final pokemonList = await _datasource.fetchPokemonList(
-      pageLimit: pageLimit,
-      pageOffset: pageOffset,
-    );
+    try {
+      final pokemonList = await _remoteDatasource.fetchPokemonList(
+        pageLimit: pageLimit,
+        pageOffset: pageOffset,
+      );
 
-    final pokemonDetails = await Future.wait(
-      pokemonList.map(
-        (pokemon) => _datasource.fetchPokemonDetails(pokemonId: pokemon.id),
-      ),
-    );
+      final pokemonDetails = await Future.wait(
+        pokemonList.map(
+          (pokemon) =>
+              _remoteDatasource.fetchPokemonDetails(pokemonId: pokemon.id),
+        ),
+      );
 
-    return pokemonDetails.map((details) => details.toPokemonEntity()).toList();
+      await _localDatasource.savePokemons(pokemons: pokemonDetails);
+
+      return pokemonDetails
+          .map((details) => details.toPokemonEntity())
+          .toList();
+    } catch (_) {
+      final localPokemons = await _localDatasource.fetchPokemons();
+      return localPokemons.map((details) => details.toPokemonEntity()).toList();
+    }
   }
 }

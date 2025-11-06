@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pokeapi/src/core/theme/app_colors.dart';
 
+import '../../../../../core/widgets/network_image_widget.dart';
 import '../../../domain/entities/pokemon_entity.dart';
 
 class PokemonCardWidget extends StatelessWidget {
@@ -10,10 +12,11 @@ class PokemonCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.white,
       child: Column(
         spacing: 16,
         children: [
-          Image.network(
+          ImageNetworkWidget(
             pokemon.imageUrl,
             height: 150,
             width: 150,
