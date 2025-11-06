@@ -11,21 +11,21 @@ class PokemonNotifier extends ValueNotifier<PokemonState> {
 
   PokemonNotifier({required FetchPokemonsUseCase fetchPokemonsUseCase})
     : _fetchPokemonsUseCase = fetchPokemonsUseCase,
-      super(PokemonInitialState());
+      super(PokemonState());
 
   final _pageOffset = 0;
   static const _pageLimit = 100;
 
   Future<void> fetchPokemons() async {
-    value = PokemonLoadingState();
+    value = value.copyWith(status: PokemonStatus.loading);
     try {
       final pokemons = await _fetchPokemonsUseCase(
         pageLimit: _pageLimit,
         pageOffset: _pageOffset,
       );
-      value = PokemonLoadedState(pokemons: pokemons);
+      value = value.copyWith(pokemons: pokemons, status: PokemonStatus.loaded);
     } catch (e) {
-      value = PokemonErrorState(message: 'Falha ao carregar Pokémons');
+      value = value.copyWith(status: PokemonStatus.error);
     }
   }
 }

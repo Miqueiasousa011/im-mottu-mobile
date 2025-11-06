@@ -1,29 +1,26 @@
 part of 'pokemon_notifier.dart';
 
-abstract class PokemonState extends Equatable {
-  const PokemonState();
-  @override
-  List<Object?> get props => [];
-}
-
-class PokemonInitialState extends PokemonState {}
-
-class PokemonLoadingState extends PokemonState {}
-
-class PokemonLoadedState extends PokemonState {
+class PokemonState extends Equatable {
   final List<PokemonEntity> pokemons;
+  final PokemonStatus status;
 
-  const PokemonLoadedState({required this.pokemons});
-
-  @override
-  List<Object?> get props => [pokemons];
-}
-
-class PokemonErrorState extends PokemonState {
-  final String message;
-
-  const PokemonErrorState({required this.message});
+  const PokemonState({
+    this.pokemons = const [],
+    this.status = PokemonStatus.initial,
+  });
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [pokemons, status];
+
+  PokemonState copyWith({
+    List<PokemonEntity>? pokemons,
+    PokemonStatus? status,
+  }) {
+    return PokemonState(
+      pokemons: pokemons ?? this.pokemons,
+      status: status ?? this.status,
+    );
+  }
 }
+
+enum PokemonStatus { initial, loading, loaded, error }

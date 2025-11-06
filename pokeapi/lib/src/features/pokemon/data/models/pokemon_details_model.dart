@@ -19,8 +19,8 @@ class PokemonDetailsModel {
     return PokemonDetailsModel(
       id: map['id'],
       name: map['name'],
-      weight: map['weight'],
-      height: map['height'],
+      weight: double.parse(map['weight'].toString()),
+      height: double.parse(map['height'].toString()),
       imageUrl: map['sprites']['front_default'],
     );
   }
