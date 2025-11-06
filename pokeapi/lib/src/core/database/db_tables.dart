@@ -20,7 +20,8 @@ class DbTables {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             pokemon_id INTEGER,
             name TEXT,
-            url TEXT UNIQUE,
+            url TEXT,
+            UNIQUE(pokemon_id, url),
             FOREIGN KEY (pokemon_id) REFERENCES $pokemons(id)
       );
 ''';
@@ -31,7 +32,8 @@ class DbTables {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             pokemon_id INTEGER,
             name TEXT,
-            url TEXT UNIQUE,
+            url TEXT,
+            UNIQUE(pokemon_id, url),
             FOREIGN KEY (pokemon_id) REFERENCES $pokemons(id)
       );
 ''';
