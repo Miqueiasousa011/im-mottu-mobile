@@ -3,6 +3,8 @@ import 'package:pokeapi/src/features/pokemon/data/models/pokemon_details_model.d
 import 'package:sqflite/sqlite_api.dart';
 
 import '../../../../../core/database/app_database.dart';
+import '../../models/pokemon_abilities_model.dart';
+import '../../models/pokemon_type_model.dart';
 import '../pokemon_local_datasource.dart';
 
 class PokemonLocalDatasourceImpl implements PokemonLocalDatasource {
@@ -11,8 +13,64 @@ class PokemonLocalDatasourceImpl implements PokemonLocalDatasource {
   const PokemonLocalDatasourceImpl(this.database);
 
   @override
-  Future<List<PokemonDetailsModel>?> fetchPokemons() {
-    throw UnimplementedError();
+  Future<List<PokemonDetailsModel>> fetchPokemons() async {
+    final db = await database.getDatabase();
+
+    final pokemonsMap = await db.query(DbTables.pokemons);
+
+    if (pokemonsMap.isEmpty) {
+      return [];
+    }
+
+    final List<PokemonDetailsModel> pokemons = [];
+
+    for (final pokemonMap in pokemonsMap) {
+      final pokemonId = pokemonMap['id'];
+
+      final typesMap = await db.query(
+        DbTables.pokemonTypes,
+        where: 'pokemon_id = ?',
+        whereArgs: [pokemonId],
+      );
+
+      final abilitiesMap = await db.query(
+        DbTables.pokemonAbilities,
+        where: 'pokemon_id = ?',
+        whereArgs: [pokemonId],
+      );
+
+      final types = typesMap
+          .map(
+            (typeMap) => PokemonTypeModel(
+              name: typeMap['name'] as String,
+              url: typeMap['url'] as String,
+            ),
+          )
+          .toList();
+
+      final abilities = abilitiesMap
+          .map(
+            (abilityMap) => PokemonAbilitiesModel(
+              name: abilityMap['name'] as String,
+              url: abilityMap['url'] as String,
+            ),
+          )
+          .toList();
+
+      final pokemon = PokemonDetailsModel(
+        id: pokemonMap['id'] as int,
+        name: pokemonMap['name'] as String,
+        weight: pokemonMap['weight'] as double,
+        height: pokemonMap['height'] as double,
+        imageUrl: pokemonMap['image_url'] as String,
+        types: types,
+        abilities: abilities,
+      );
+
+      pokemons.add(pokemon);
+    }
+
+    return pokemons;
   }
 
   @override

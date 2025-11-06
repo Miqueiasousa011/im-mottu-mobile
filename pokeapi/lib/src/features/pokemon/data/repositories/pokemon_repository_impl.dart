@@ -19,20 +19,27 @@ class PokemonRepositoryImpl implements PokemonRepository {
     required int pageLimit,
     required int pageOffset,
   }) async {
-    final pokemonList = await _remoteDatasource.fetchPokemonList(
-      pageLimit: pageLimit,
-      pageOffset: pageOffset,
-    );
+    try {
+      final pokemonList = await _remoteDatasource.fetchPokemonList(
+        pageLimit: pageLimit,
+        pageOffset: pageOffset,
+      );
 
-    final pokemonDetails = await Future.wait(
-      pokemonList.map(
-        (pokemon) =>
-            _remoteDatasource.fetchPokemonDetails(pokemonId: pokemon.id),
-      ),
-    );
+      final pokemonDetails = await Future.wait(
+        pokemonList.map(
+          (pokemon) =>
+              _remoteDatasource.fetchPokemonDetails(pokemonId: pokemon.id),
+        ),
+      );
 
-    await _localDatasource.savePokemons(pokemons: pokemonDetails);
+      await _localDatasource.savePokemons(pokemons: pokemonDetails);
 
-    return pokemonDetails.map((details) => details.toPokemonEntity()).toList();
+      return pokemonDetails
+          .map((details) => details.toPokemonEntity())
+          .toList();
+    } catch (_) {
+      final localPokemons = await _localDatasource.fetchPokemons();
+      return localPokemons.map((details) => details.toPokemonEntity()).toList();
+    }
   }
 }
