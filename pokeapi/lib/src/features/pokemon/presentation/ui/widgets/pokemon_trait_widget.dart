@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pokeapi/src/core/theme/app_colors.dart';
+
+import 'trait_item_widget.dart';
 
 class PokemonTraitWidget extends StatelessWidget {
   const PokemonTraitWidget({
@@ -21,26 +22,7 @@ class PokemonTraitWidget extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
 
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
-          constraints: BoxConstraints(minWidth: 80),
-          decoration: BoxDecoration(
-            color: AppColors.grey300,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Text(
-            traitDescription,
-            style: Theme.of(context).textTheme.bodyLarge,
-            textAlign: TextAlign.center,
-          ),
-        ),
+        TraitItemWidget(description: traitDescription),
       ],
     );
   }

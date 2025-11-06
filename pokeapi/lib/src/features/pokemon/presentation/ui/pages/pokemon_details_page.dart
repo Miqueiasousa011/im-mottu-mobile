@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/entities/pokemon_entity.dart';
 import '../widgets/pokemon_trait_widget.dart';
+import '../widgets/trait_item_widget.dart';
 
 class PokemonDetailsPage extends StatelessWidget {
   const PokemonDetailsPage({super.key, required this.pokemon});
@@ -47,6 +48,35 @@ class PokemonDetailsPage extends StatelessWidget {
                 ],
               ),
 
+              const Text(
+                'Habilidades',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+
+              Row(
+                spacing: 16,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: pokemon.abilities
+                    .map(
+                      (ability) => TraitItemWidget(description: ability.name),
+                    )
+                    .toList(),
+              ),
+
+              const Text(
+                'Tipos',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+
+              Row(
+                spacing: 16,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: pokemon.types
+                    .map((type) => TraitItemWidget(description: type.name))
+                    .toList(),
+              ),
               const SizedBox(height: 20),
             ],
           ),
