@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pokeapi/src/core/di/service_locator.dart';
 import 'package:pokeapi/src/features/pokemon/presentation/ui/widgets/pokemon_card_widget.dart';
 
 import '../../../../../core/mixins/loading_overlay_mixin.dart';
+import '../../../../../core/router/app_router.dart';
 import '../../notifiers/pokemon_notifier.dart';
 
 class PokemonListPage extends StatefulWidget {
@@ -57,7 +59,8 @@ class _PokemonListPageState extends State<PokemonListPage>
               );
             }
 
-            if (state.pokemons.isEmpty) {
+            if (state.pokemons.isEmpty &&
+                state.status == PokemonStatus.loaded) {
               return const Center(child: Text('Nenhum Pokémon encontrado'));
             }
 
@@ -71,7 +74,13 @@ class _PokemonListPageState extends State<PokemonListPage>
               ),
               itemCount: state.pokemons.length,
               itemBuilder: (context, index) {
-                return PokemonCardWidget(pokemon: state.pokemons[index]);
+                return InkWell(
+                  onTap: () => context.pushNamed(
+                    AppRouter.paths.pokemonDetails.name,
+                    extra: state.pokemons[index],
+                  ),
+                  child: PokemonCardWidget(pokemon: state.pokemons[index]),
+                );
               },
             );
           },
