@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/network_image_widget.dart';
 import '../../../domain/entities/pokemon_entity.dart';
 import '../widgets/pokemon_trait_widget.dart';
 import '../widgets/trait_item_widget.dart';
@@ -17,13 +19,14 @@ class PokemonDetailsPage extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Card(
+          color: AppColors.white,
           child: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: Column(
               spacing: 16,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Image.network(
+                ImageNetworkWidget(
                   pokemon.imageUrl,
                   height: 210,
                   width: 201,
