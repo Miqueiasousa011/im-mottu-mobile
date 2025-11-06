@@ -1,7 +1,7 @@
 import 'package:pokeapi/src/features/pokemon/domain/entities/pokemon_entity.dart';
 
-import '../../domain/entities/pokemon_abilities.dart';
 import 'pokemon_abilities_model.dart';
+import 'pokemon_type_model.dart';
 
 class PokemonDetailsModel {
   final int id;
@@ -9,6 +9,7 @@ class PokemonDetailsModel {
   final double weight;
   final double height;
   final String imageUrl;
+  final List<PokemonTypeModel> types;
   final List<PokemonAbilitiesModel> abilities;
 
   const PokemonDetailsModel({
@@ -17,6 +18,7 @@ class PokemonDetailsModel {
     required this.weight,
     required this.height,
     required this.imageUrl,
+    required this.types,
     required this.abilities,
   });
 
@@ -32,6 +34,9 @@ class PokemonDetailsModel {
           (ability) => PokemonAbilitiesModel.fromJson(ability['ability']),
         ),
       ),
+      types: List<PokemonTypeModel>.from(
+        map['types'].map((type) => PokemonTypeModel.fromJson(type['type'])),
+      ),
     );
   }
 
@@ -42,13 +47,9 @@ class PokemonDetailsModel {
       weight: weight,
       height: height,
       imageUrl: imageUrl,
+      types: types.map((type) => type.toPokemonType()).toList(),
       abilities: abilities
-          .map(
-            (abilityModel) => PokemonAbilities(
-              name: abilityModel.name,
-              url: abilityModel.url,
-            ),
-          )
+          .map((ability) => ability.toPokemonAbilities())
           .toList(),
     );
   }
