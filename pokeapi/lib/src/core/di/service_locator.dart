@@ -8,6 +8,8 @@ import '../../features/pokemon/data/datasources/remote/pokemon_remote_datasource
 import '../../features/pokemon/data/repositories/pokemon_repository_impl.dart';
 import '../../features/pokemon/domain/usecases/clear_cache/clear_cache_usecase.dart';
 import '../../features/pokemon/domain/usecases/clear_cache/clear_cache_usecase_impl.dart';
+import '../../features/pokemon/domain/usecases/fetch_pokemon_by_ability/fetch_pokemon_by_ability_usecase.dart';
+import '../../features/pokemon/domain/usecases/fetch_pokemon_by_ability/fetch_pokemon_by_ability_usecase_impl.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemon_by_type/fetch_pokemon_by_type_usecase.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemon_by_type/fetch_pokemon_by_type_usecase_impl.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemons/fetch_pokemons_usecase.dart';
@@ -60,6 +62,12 @@ void setupServiceLocator() {
     () => FetchPokemonByTypeUsecaseImpl(repository: getIt<PokemonRepository>()),
   );
 
+  getIt.registerLazySingleton<FetchPokemonByAbilityUsecase>(
+    () => FetchPokemonByAbilityUsecaseImpl(
+      repository: getIt<PokemonRepository>(),
+    ),
+  );
+
   /// Notifiers
   getIt.registerFactory(
     () => PokemonNotifier(
@@ -71,6 +79,7 @@ void setupServiceLocator() {
   getIt.registerFactory(
     () => PokemonDetailsNotifier(
       fetchPokemonByTypeUsecase: getIt<FetchPokemonByTypeUsecase>(),
+      fetchPokemonByAbilityUsecase: getIt<FetchPokemonByAbilityUsecase>(),
     ),
   );
 }

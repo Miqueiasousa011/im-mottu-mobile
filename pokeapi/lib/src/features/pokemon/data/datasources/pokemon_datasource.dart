@@ -8,4 +8,5 @@ abstract interface class PokemonDatasource {
   });
   Future<PokemonDetailsModel> fetchPokemonDetails({required String pokemonId});
   Future<List<PokemonModel>> fetchPokemonsByType({required String type});
+  Future<List<PokemonModel>> fetchPokemonsByAbility({required String ability});
 }

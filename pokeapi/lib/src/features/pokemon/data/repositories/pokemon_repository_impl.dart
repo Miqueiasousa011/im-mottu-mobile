@@ -66,4 +66,21 @@ class PokemonRepositoryImpl implements PokemonRepository {
 
     return pokemonDetails.map((details) => details.toPokemonEntity()).toList();
   }
+
+  @override
+  Future<List<PokemonEntity>> fetchPokemonsByAbility({
+    required String ability,
+  }) async {
+    final pokemonList = await _remoteDatasource.fetchPokemonsByAbility(
+      ability: ability,
+    );
+
+    final pokemonDetails = await Future.wait(
+      pokemonList.map((pokemon) {
+        return _remoteDatasource.fetchPokemonDetails(pokemonId: pokemon.id);
+      }),
+    );
+
+    return pokemonDetails.map((details) => details.toPokemonEntity()).toList();
+  }
 }

@@ -43,4 +43,17 @@ class PokemonRemoteDatasource implements PokemonDatasource {
         .map((json) => PokemonModel.fromMap(json['pokemon']))
         .toList();
   }
+
+  @override
+  Future<List<PokemonModel>> fetchPokemonsByAbility({
+    required String ability,
+  }) async {
+    final data = await _httpClientService.get(endpoint: '/ability/$ability');
+
+    final pokemonList = data['pokemon'] as List;
+
+    return pokemonList
+        .map((json) => PokemonModel.fromMap(json['pokemon']))
+        .toList();
+  }
 }

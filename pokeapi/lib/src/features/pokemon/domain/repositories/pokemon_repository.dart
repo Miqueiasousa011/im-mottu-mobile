@@ -8,5 +8,7 @@ abstract interface class PokemonRepository {
 
   Future<List<PokemonEntity>> fetchPokemonsByType({required String type});
 
+  Future<List<PokemonEntity>> fetchPokemonsByAbility({required String ability});
+
   Future<void> clearCache();
 }

@@ -60,7 +60,7 @@ class _PokemonDetailsPageState extends State<PokemonDetailsPage>
               spacing: 16,
               children: [
                 Text(
-                  'Pokémons Tipo ${pokemons.first.types.first.name}',
+                  'Pokémons Relacionados',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
 
@@ -150,8 +150,11 @@ class _PokemonDetailsPageState extends State<PokemonDetailsPage>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: widget.pokemon.abilities
                         .map(
-                          (ability) =>
-                              TraitItemWidget(description: ability.name),
+                          (ability) => InkWell(
+                            onTap: () => pokemonDetailsNotifier
+                                .fetchPokemonsByAbility(ability.id),
+                            child: TraitItemWidget(description: ability.name),
+                          ),
                         )
                         .toList(),
                   ),
