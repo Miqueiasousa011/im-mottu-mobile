@@ -38,7 +38,7 @@ class _PokemonListPageState extends State<PokemonListPage>
   }
 
   void scrollListener() {
-    if (scrollController.position.pixels >=
+    if (scrollController.position.pixels ==
         scrollController.position.maxScrollExtent) {
       pokemonNotifier.fetchPokemons();
     }
@@ -75,52 +75,55 @@ class _PokemonListPageState extends State<PokemonListPage>
       appBar: AppBar(title: const Text('Pokédex'), centerTitle: true),
 
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ValueListenableBuilder(
-            valueListenable: pokemonNotifier,
-            builder: (context, state, child) {
-              if (state.status == PokemonStatus.error) {
-                return const Center(
-                  child: Text('Não foi possível carregar os Pokémons'),
-                );
-              }
-
-              return CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: FilterInputWidget(
-                      onChanged: pokemonNotifier.filterPokemons,
-                    ),
-                  ),
-
-                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-                  SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 190,
-                          childAspectRatio: .85,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                        ),
-
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final pokemon = state.pokemons[index];
-                      return InkWell(
-                        onTap: () => context.pushNamed(
-                          AppRouter.paths.pokemonDetails.name,
-                          extra: pokemon,
-                        ),
-                        child: PokemonCardWidget(pokemon: pokemon),
-                      );
-                    }, childCount: state.pokemons.length),
-                  ),
-                ],
+        child: ValueListenableBuilder(
+          valueListenable: pokemonNotifier,
+          builder: (context, state, child) {
+            if (state.status == PokemonStatus.error) {
+              return const Center(
+                child: Text('Não foi possível carregar os Pokémons'),
               );
-            },
-          ),
+            }
+
+            return Scrollbar(
+              controller: scrollController,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: FilterInputWidget(
+                        onChanged: pokemonNotifier.filterPokemons,
+                      ),
+                    ),
+
+                    const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+                    SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 190,
+                            childAspectRatio: .85,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final pokemon = state.pokemons[index];
+                        return InkWell(
+                          onTap: () => context.pushNamed(
+                            AppRouter.paths.pokemonDetails.name,
+                            extra: pokemon,
+                          ),
+                          child: PokemonCardWidget(pokemon: pokemon),
+                        );
+                      }, childCount: state.pokemons.length),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

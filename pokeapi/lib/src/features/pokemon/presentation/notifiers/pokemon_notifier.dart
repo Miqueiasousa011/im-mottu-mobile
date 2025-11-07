@@ -23,8 +23,12 @@ class PokemonNotifier extends ValueNotifier<PokemonState> {
 
   List<PokemonEntity> _pokemonsList = [];
 
+  bool _isLoading = false;
+
   Future<void> fetchPokemons() async {
+    if (_isLoading) return;
     value = value.copyWith(status: PokemonStatus.loading);
+    _isLoading = true;
     try {
       final pokemons = await _fetchPokemonsUseCase(
         pageLimit: _pageLimit,
@@ -41,6 +45,8 @@ class PokemonNotifier extends ValueNotifier<PokemonState> {
       );
     } catch (e) {
       value = value.copyWith(status: PokemonStatus.error);
+    } finally {
+      _isLoading = false;
     }
   }
 

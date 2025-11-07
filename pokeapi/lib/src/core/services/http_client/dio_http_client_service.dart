@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:pokeapi/src/core/services/http_client/http_exception.dart';
 
@@ -24,6 +26,7 @@ class DioHttpClientService implements HttpClientService {
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
+      log('GET Request: $endpoint, Query Parameters: $queryParameters');
       final response = await _dio.get(
         endpoint,
         queryParameters: queryParameters,
