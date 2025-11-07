@@ -6,5 +6,7 @@ abstract interface class PokemonRepository {
     required int pageOffset,
   });
 
+  Future<List<PokemonEntity>> fetchPokemonsByType({required String type});
+
   Future<void> clearCache();
 }

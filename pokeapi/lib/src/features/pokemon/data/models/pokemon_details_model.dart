@@ -28,7 +28,7 @@ class PokemonDetailsModel {
       name: map['name'],
       weight: double.parse(map['weight'].toString()),
       height: double.parse(map['height'].toString()),
-      imageUrl: map['sprites']['front_default'],
+      imageUrl: map['sprites']?['front_default'] ?? '',
       abilities: List<PokemonAbilitiesModel>.from(
         map['abilities'].map(
           (ability) => PokemonAbilitiesModel.fromJson(ability['ability']),

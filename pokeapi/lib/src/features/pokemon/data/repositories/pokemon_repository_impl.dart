@@ -51,4 +51,19 @@ class PokemonRepositoryImpl implements PokemonRepository {
   Future<void> clearCache() async {
     await _localDatasource.clearCache();
   }
+
+  @override
+  Future<List<PokemonEntity>> fetchPokemonsByType({
+    required String type,
+  }) async {
+    final pokemonList = await _remoteDatasource.fetchPokemonsByType(type: type);
+
+    final pokemonDetails = await Future.wait(
+      pokemonList.map((pokemon) {
+        return _remoteDatasource.fetchPokemonDetails(pokemonId: pokemon.id);
+      }),
+    );
+
+    return pokemonDetails.map((details) => details.toPokemonEntity()).toList();
+  }
 }
