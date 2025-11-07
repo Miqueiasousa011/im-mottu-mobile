@@ -19,18 +19,29 @@ class _PokemonListPageState extends State<PokemonListPage>
     with LoadingOverlayMixin, WidgetsBindingObserver {
   late final PokemonNotifier pokemonNotifier;
 
+  late final ScrollController scrollController;
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
 
     pokemonNotifier = getIt.get<PokemonNotifier>();
+    scrollController = ScrollController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.addListener(scrollListener);
       pokemonNotifier.addListener(pokemonListener);
       pokemonNotifier.fetchPokemons();
     });
 
     super.initState();
+  }
+
+  void scrollListener() {
+    if (scrollController.position.pixels >=
+        scrollController.position.maxScrollExtent) {
+      pokemonNotifier.fetchPokemons();
+    }
   }
 
   void pokemonListener() {
@@ -53,6 +64,7 @@ class _PokemonListPageState extends State<PokemonListPage>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    scrollController.removeListener(scrollListener);
     pokemonNotifier.removeListener(pokemonListener);
     super.dispose();
   }
@@ -75,6 +87,7 @@ class _PokemonListPageState extends State<PokemonListPage>
               }
 
               return CustomScrollView(
+                controller: scrollController,
                 slivers: [
                   SliverToBoxAdapter(
                     child: FilterInputWidget(

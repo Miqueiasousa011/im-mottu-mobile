@@ -38,7 +38,11 @@ class PokemonRepositoryImpl implements PokemonRepository {
           .map((details) => details.toPokemonEntity())
           .toList();
     } catch (_) {
-      final localPokemons = await _localDatasource.fetchPokemons();
+      final localPokemons = await _localDatasource.fetchPokemons(
+        pageLimit: pageLimit,
+        pageOffset: pageOffset,
+      );
+
       return localPokemons.map((details) => details.toPokemonEntity()).toList();
     }
   }
