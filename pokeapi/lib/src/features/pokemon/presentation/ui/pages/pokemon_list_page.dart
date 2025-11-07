@@ -16,11 +16,13 @@ class PokemonListPage extends StatefulWidget {
 }
 
 class _PokemonListPageState extends State<PokemonListPage>
-    with LoadingOverlayMixin {
+    with LoadingOverlayMixin, WidgetsBindingObserver {
   late final PokemonNotifier pokemonNotifier;
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
+
     pokemonNotifier = getIt.get<PokemonNotifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -41,7 +43,16 @@ class _PokemonListPageState extends State<PokemonListPage>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      pokemonNotifier.clearCache();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     pokemonNotifier.removeListener(pokemonListener);
     super.dispose();
   }

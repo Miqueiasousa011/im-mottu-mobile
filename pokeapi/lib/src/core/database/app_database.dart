@@ -38,4 +38,15 @@ class AppDatabase {
       _database = null;
     }
   }
+
+  Future<void> clearCache() async {
+    final db = await getDatabase();
+    final batch = db.batch();
+
+    batch.delete(DbTables.pokemons);
+    batch.delete(DbTables.pokemonTypes);
+    batch.delete(DbTables.pokemonAbilities);
+
+    await batch.commit(noResult: true);
+  }
 }

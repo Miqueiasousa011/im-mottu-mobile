@@ -115,4 +115,9 @@ class PokemonLocalDatasourceImpl implements PokemonLocalDatasource {
       await batch.commit(noResult: true);
     });
   }
+
+  @override
+  Future<void> clearCache() async {
+    await database.clearCache();
+  }
 }

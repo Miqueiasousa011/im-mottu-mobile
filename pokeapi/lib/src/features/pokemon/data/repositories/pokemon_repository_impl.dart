@@ -42,4 +42,9 @@ class PokemonRepositoryImpl implements PokemonRepository {
       return localPokemons.map((details) => details.toPokemonEntity()).toList();
     }
   }
+
+  @override
+  Future<void> clearCache() async {
+    await _localDatasource.clearCache();
+  }
 }

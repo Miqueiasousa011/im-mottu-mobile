@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pokeapi/src/features/pokemon/domain/usecases/clear_cache/clear_cache_usecase.dart';
 import 'package:pokeapi/src/features/pokemon/domain/usecases/fetch_pokemons/fetch_pokemons_usecase.dart';
 
 import '../../domain/entities/pokemon_entity.dart';
@@ -8,10 +9,14 @@ part 'pokemon_state.dart';
 
 class PokemonNotifier extends ValueNotifier<PokemonState> {
   final FetchPokemonsUseCase _fetchPokemonsUseCase;
+  final ClearCacheUsecase _clearCacheUseCase;
 
-  PokemonNotifier({required FetchPokemonsUseCase fetchPokemonsUseCase})
-    : _fetchPokemonsUseCase = fetchPokemonsUseCase,
-      super(PokemonState());
+  PokemonNotifier({
+    required FetchPokemonsUseCase fetchPokemonsUseCase,
+    required ClearCacheUsecase clearCacheUseCase,
+  }) : _fetchPokemonsUseCase = fetchPokemonsUseCase,
+       _clearCacheUseCase = clearCacheUseCase,
+       super(PokemonState());
 
   final _pageOffset = 0;
   static const _pageLimit = 100;
@@ -49,5 +54,9 @@ class PokemonNotifier extends ValueNotifier<PokemonState> {
       pokemons: filteredPokemons,
       status: PokemonStatus.loaded,
     );
+  }
+
+  Future<void> clearCache() async {
+    await _clearCacheUseCase();
   }
 }
