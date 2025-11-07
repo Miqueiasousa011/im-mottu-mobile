@@ -6,6 +6,7 @@ import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/widgets/network_image_widget.dart';
 import '../../../domain/entities/pokemon_entity.dart';
 import '../../notifiers/pokemon_details_notifier.dart';
+import '../widgets/pokemon_expansion_tile_widget.dart';
 import '../widgets/pokemon_trait_widget.dart';
 import '../widgets/trait_item_widget.dart';
 
@@ -40,6 +41,45 @@ class _PokemonDetailsPageState extends State<PokemonDetailsPage>
       showLoading();
     } else {
       removeLoading();
+    }
+
+    if (state is PokemonDetailsLoaded) {
+      final pokemons = state.pokemons;
+
+      if (pokemons.isEmpty) return;
+
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          constraints: const BoxConstraints(maxHeight: 500),
+          insetPadding: EdgeInsets.all(16),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            constraints: const BoxConstraints(maxHeight: 500),
+            child: Column(
+              spacing: 16,
+              children: [
+                Text(
+                  'Pokémons Tipo ${pokemons.first.types.first.name}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+
+                Flexible(
+                  child: ListView.builder(
+                    itemCount: pokemons.length,
+                    itemBuilder: (context, index) {
+                      return PokemonExpansionTileWidget(
+                        key: ValueKey(pokemons[index].name),
+                        pokemon: pokemons[index],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
 
     if (state is PokemonDetailsError) {

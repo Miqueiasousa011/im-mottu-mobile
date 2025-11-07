@@ -18,7 +18,7 @@ class PokemonDetailsNotifier extends ValueNotifier<PokemonDetailsState> {
     try {
       value = PokemonDetailsLoading();
       final pokemons = await _fetchPokemonByTypeUsecase.call(type: type);
-      value = PokemonDetailsLoaded(pokemon: pokemons);
+      value = PokemonDetailsLoaded(pokemons: pokemons);
     } catch (e) {
       value = PokemonDetailsError(
         message: 'Não foi possível carregar os Pokémons. Tente novamente.',
