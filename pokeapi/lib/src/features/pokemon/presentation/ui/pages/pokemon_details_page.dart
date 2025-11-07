@@ -1,15 +1,99 @@
 import 'package:flutter/material.dart';
+import 'package:pokeapi/src/core/mixins/loading_overlay_mixin.dart';
 
+import '../../../../../core/di/service_locator.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/widgets/network_image_widget.dart';
 import '../../../domain/entities/pokemon_entity.dart';
+import '../../notifiers/pokemon_details_notifier.dart';
+import '../widgets/pokemon_expansion_tile_widget.dart';
 import '../widgets/pokemon_trait_widget.dart';
 import '../widgets/trait_item_widget.dart';
 
-class PokemonDetailsPage extends StatelessWidget {
+class PokemonDetailsPage extends StatefulWidget {
   const PokemonDetailsPage({super.key, required this.pokemon});
 
   final PokemonEntity pokemon;
+
+  @override
+  State<PokemonDetailsPage> createState() => _PokemonDetailsPageState();
+}
+
+class _PokemonDetailsPageState extends State<PokemonDetailsPage>
+    with LoadingOverlayMixin {
+  late final PokemonDetailsNotifier pokemonDetailsNotifier;
+
+  @override
+  void initState() {
+    pokemonDetailsNotifier = getIt<PokemonDetailsNotifier>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      pokemonDetailsNotifier.addListener(pokemonDetailsListener);
+    });
+
+    super.initState();
+  }
+
+  void pokemonDetailsListener() {
+    final state = pokemonDetailsNotifier.value;
+
+    if (state is PokemonDetailsLoading) {
+      showLoading();
+    } else {
+      removeLoading();
+    }
+
+    if (state is PokemonDetailsLoaded) {
+      final pokemons = state.pokemons;
+
+      if (pokemons.isEmpty) return;
+
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          constraints: const BoxConstraints(maxHeight: 500),
+          insetPadding: EdgeInsets.all(16),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            constraints: const BoxConstraints(maxHeight: 500),
+            child: Column(
+              spacing: 16,
+              children: [
+                Text(
+                  'Pokémons Relacionados',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+
+                Flexible(
+                  child: ListView.builder(
+                    itemCount: pokemons.length,
+                    itemBuilder: (context, index) {
+                      return PokemonExpansionTileWidget(
+                        key: ValueKey(pokemons[index].name),
+                        pokemon: pokemons[index],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (state is PokemonDetailsError) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.message)));
+    }
+  }
+
+  @override
+  void dispose() {
+    pokemonDetailsNotifier.removeListener(pokemonDetailsListener);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +111,13 @@ class PokemonDetailsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ImageNetworkWidget(
-                  pokemon.imageUrl,
+                  widget.pokemon.imageUrl,
                   height: 210,
                   width: 201,
                   fit: BoxFit.contain,
                 ),
                 Text(
-                  pokemon.name,
+                  widget.pokemon.name,
                   style: Theme.of(context).textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -44,11 +128,11 @@ class PokemonDetailsPage extends StatelessWidget {
                   children: [
                     PokemonTraitWidget(
                       traitName: 'Altura',
-                      traitDescription: '${pokemon.height.toInt()}',
+                      traitDescription: '${widget.pokemon.height.toInt()}',
                     ),
                     PokemonTraitWidget(
                       traitName: 'Peso',
-                      traitDescription: '${pokemon.weight.toInt()}',
+                      traitDescription: '${widget.pokemon.weight.toInt()}',
                     ),
                   ],
                 ),
@@ -64,10 +148,13 @@ class PokemonDetailsPage extends StatelessWidget {
                   child: Row(
                     spacing: 16,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: pokemon.abilities
+                    children: widget.pokemon.abilities
                         .map(
-                          (ability) =>
-                              TraitItemWidget(description: ability.name),
+                          (ability) => InkWell(
+                            onTap: () => pokemonDetailsNotifier
+                                .fetchPokemonsByAbility(ability.id),
+                            child: TraitItemWidget(description: ability.name),
+                          ),
                         )
                         .toList(),
                   ),
@@ -82,8 +169,14 @@ class PokemonDetailsPage extends StatelessWidget {
                 Row(
                   spacing: 16,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: pokemon.types
-                      .map((type) => TraitItemWidget(description: type.name))
+                  children: widget.pokemon.types
+                      .map(
+                        (type) => InkWell(
+                          onTap: () => pokemonDetailsNotifier
+                              .fetchPokemonsByType(type.name),
+                          child: TraitItemWidget(description: type.name),
+                        ),
+                      )
                       .toList(),
                 ),
                 const SizedBox(height: 20),

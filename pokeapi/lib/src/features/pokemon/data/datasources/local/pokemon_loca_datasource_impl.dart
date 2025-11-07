@@ -13,10 +13,17 @@ class PokemonLocalDatasourceImpl implements PokemonLocalDatasource {
   const PokemonLocalDatasourceImpl(this.database);
 
   @override
-  Future<List<PokemonDetailsModel>> fetchPokemons() async {
+  Future<List<PokemonDetailsModel>> fetchPokemons({
+    required int pageLimit,
+    required int pageOffset,
+  }) async {
     final db = await database.getDatabase();
 
-    final pokemonsMap = await db.query(DbTables.pokemons);
+    final pokemonsMap = await db.query(
+      DbTables.pokemons,
+      limit: pageLimit,
+      offset: pageOffset,
+    );
 
     if (pokemonsMap.isEmpty) {
       return [];
@@ -114,5 +121,10 @@ class PokemonLocalDatasourceImpl implements PokemonLocalDatasource {
 
       await batch.commit(noResult: true);
     });
+  }
+
+  @override
+  Future<void> clearCache() async {
+    await database.clearCache();
   }
 }

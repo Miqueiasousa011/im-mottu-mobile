@@ -6,8 +6,15 @@ import '../../features/pokemon/data/datasources/pokemon_datasource.dart';
 import '../../features/pokemon/data/datasources/pokemon_local_datasource.dart';
 import '../../features/pokemon/data/datasources/remote/pokemon_remote_datasource.dart';
 import '../../features/pokemon/data/repositories/pokemon_repository_impl.dart';
+import '../../features/pokemon/domain/usecases/clear_cache/clear_cache_usecase.dart';
+import '../../features/pokemon/domain/usecases/clear_cache/clear_cache_usecase_impl.dart';
+import '../../features/pokemon/domain/usecases/fetch_pokemon_by_ability/fetch_pokemon_by_ability_usecase.dart';
+import '../../features/pokemon/domain/usecases/fetch_pokemon_by_ability/fetch_pokemon_by_ability_usecase_impl.dart';
+import '../../features/pokemon/domain/usecases/fetch_pokemon_by_type/fetch_pokemon_by_type_usecase.dart';
+import '../../features/pokemon/domain/usecases/fetch_pokemon_by_type/fetch_pokemon_by_type_usecase_impl.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemons/fetch_pokemons_usecase.dart';
 import '../../features/pokemon/domain/usecases/fetch_pokemons/fetch_pokemons_usecase_impl.dart';
+import '../../features/pokemon/presentation/notifiers/pokemon_details_notifier.dart';
 import '../../features/pokemon/presentation/notifiers/pokemon_notifier.dart';
 import '../database/app_database.dart';
 import '../services/http_client/dio_http_client_service.dart';
@@ -47,8 +54,32 @@ void setupServiceLocator() {
     () => FetchPokemonsUsecaseImpl(repository: getIt<PokemonRepository>()),
   );
 
+  getIt.registerLazySingleton<ClearCacheUsecase>(
+    () => ClearCacheUsecaseImpl(pokemonRepository: getIt<PokemonRepository>()),
+  );
+
+  getIt.registerLazySingleton<FetchPokemonByTypeUsecase>(
+    () => FetchPokemonByTypeUsecaseImpl(repository: getIt<PokemonRepository>()),
+  );
+
+  getIt.registerLazySingleton<FetchPokemonByAbilityUsecase>(
+    () => FetchPokemonByAbilityUsecaseImpl(
+      repository: getIt<PokemonRepository>(),
+    ),
+  );
+
   /// Notifiers
   getIt.registerFactory(
-    () => PokemonNotifier(fetchPokemonsUseCase: getIt<FetchPokemonsUseCase>()),
+    () => PokemonNotifier(
+      fetchPokemonsUseCase: getIt<FetchPokemonsUseCase>(),
+      clearCacheUseCase: getIt<ClearCacheUsecase>(),
+    ),
+  );
+
+  getIt.registerFactory(
+    () => PokemonDetailsNotifier(
+      fetchPokemonByTypeUsecase: getIt<FetchPokemonByTypeUsecase>(),
+      fetchPokemonByAbilityUsecase: getIt<FetchPokemonByAbilityUsecase>(),
+    ),
   );
 }

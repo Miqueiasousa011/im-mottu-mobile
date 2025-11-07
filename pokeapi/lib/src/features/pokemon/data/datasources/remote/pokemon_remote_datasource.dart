@@ -14,6 +14,7 @@ class PokemonRemoteDatasource implements PokemonDatasource {
     required String pokemonId,
   }) async {
     final data = await _httpClientService.get(endpoint: '/pokemon/$pokemonId');
+
     return PokemonDetailsModel.fromMap(data);
   }
 
@@ -30,5 +31,29 @@ class PokemonRemoteDatasource implements PokemonDatasource {
     final results = data['results'] as List;
 
     return results.map((json) => PokemonModel.fromMap(json)).toList();
+  }
+
+  @override
+  Future<List<PokemonModel>> fetchPokemonsByType({required String type}) async {
+    final data = await _httpClientService.get(endpoint: '/type/$type');
+
+    final pokemonList = data['pokemon'] as List;
+
+    return pokemonList
+        .map((json) => PokemonModel.fromMap(json['pokemon']))
+        .toList();
+  }
+
+  @override
+  Future<List<PokemonModel>> fetchPokemonsByAbility({
+    required String ability,
+  }) async {
+    final data = await _httpClientService.get(endpoint: '/ability/$ability');
+
+    final pokemonList = data['pokemon'] as List;
+
+    return pokemonList
+        .map((json) => PokemonModel.fromMap(json['pokemon']))
+        .toList();
   }
 }

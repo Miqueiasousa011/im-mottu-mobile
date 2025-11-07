@@ -48,3 +48,11 @@ Foi utilizado ValueNotifier, pela simplicidade e não depender de packages exter
 - [x] Tela de detalhes contendo:
   - Tipos
   - Habilidades
+
+## Funcionalidades Implementadas no level_3
+
+- [x] Criar uma Splash screen customizada
+- [x] Limpar o cache ao fechar o app
+- [x] Implementar paginação na listagem
+- [x] Ao clicar em um tipo ou habilidade, exibir a lista de pokémons relacionados
+- [x] Permitir navegação para os detalhes de pokémons relacionados
